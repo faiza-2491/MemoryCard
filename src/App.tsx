@@ -1,120 +1,94 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import type { Image } from './types'
+import MemoryCard from "./components/MemoryCard"
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
+  const [order, setOrder] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const [images, setImages] = useState([
+    {name: "card0",
+      wasClicked: false
+    },
+    {name: "card1",
+      wasClicked: false
+    },
+    {name: "card2",
+      wasClicked: false
+    },
+    {name: "card3",
+      wasClicked: false
+    },
+    {name: "card4",
+      wasClicked: false
+    },
+    {name: "card5",
+      wasClicked: false
+    },
+    {name: "card6",
+      wasClicked: false
+    },
+    {name: "card7",
+      wasClicked: false
+    },
+    {name: "card8",
+      wasClicked: false
+    },
+    {name: "card9",
+      wasClicked: false
+    },
+    {name: "card10",
+      wasClicked: false
+    }
+  ]);
+
+  // generates a new order and returns the array of the new order of indices
+  function newRandomOrder(){
+    let newArr: number[] = [];
+    let i = 0;
+    while (i < 10) {
+      let num = Math.floor(Math.random() * 10);
+      if (!newArr.includes(num)){
+        newArr.push(num);
+        i++;
+      }
+    }
+    return newArr;
+  }
+
+  // when a memord is clicked, increase score or reset game and update highest score
+  const handleClick = (image: Image) => {
+    console.log("handleClick");
+    if (!image.wasClicked){
+      image.wasClicked = true;
+      setScore(score+1);
+      setOrder(newRandomOrder());
+    }
+    else {
+      if (score > bestScore){
+        setBestScore(score);
+        setScore(0);
+        setOrder(newRandomOrder());
+        let resetImages = images.map((image) => {
+          return {
+            ...image,
+            wasClicked: false
+          }
+        })
+        setImages(resetImages);
+      }
+    }
+  };
+
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <h3>Score: {score}</h3>
+      <h3>Best Score: {bestScore}</h3>
+      {order.map((index) => 
+        <MemoryCard key = {images[index].name} name = {images[index].name} onClick={() => handleClick(images[index])} />
+      )};
     </>
   )
 }
