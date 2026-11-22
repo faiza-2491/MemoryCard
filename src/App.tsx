@@ -10,9 +10,22 @@ function App() {
   const [order, setOrder] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
   const [images, setImages] = useState<Image[] | null>(null);
   const baseURL = "https://api.giphy.com/v1/gifs/";
+  const key = "hVenCOkfAfw2LAQxxZBZKUDHaN0M1VDR";
 
   useEffect(() => {
     let ignore = false;
+
+    async function loadImage(id: string)
+    {
+      try {
+        let response = await fetch(`${baseURL}${id}?api_key=${key}`);
+        if (!response.ok) throw new Error("Error loading images");
+        const temp = await response.json();
+        return temp.data.images.original_still.url;
+      } catch (error) {
+        console.log(error);
+      }
+    }
     
     async function loadImageData(){
       try {
@@ -23,6 +36,10 @@ function App() {
         if (!ignore){
           const temp: ImageData = await response.json();
           console.log(temp);
+          for (let i = 0; i < temp.images.length; i++){
+            temp.images[i].url = await loadImage(temp.images[i].id);
+            console.log("image url: " + temp.images[i].url);
+          } 
           console.log(temp.images);
           setImages(temp.images);
         }
@@ -97,9 +114,11 @@ function App() {
       <>
       <h3>Score: {score}</h3>
       <h3>Best Score: {bestScore}</h3>
-      {order.map((index) => 
-        <MemoryCard key = {images[index].name} name = {images[index].name} onClick={() => handleClick(images[index])} />
-      )};
+      <div className='mem-card-container'>
+        {order.map((index) =>  
+            <MemoryCard key = {images[index].name} name = {images[index].name} url = {images[index].url} onClick={() => handleClick(images[index])} /> 
+        )};
+      </div>
       </>
     }
     </>
