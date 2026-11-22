@@ -112,8 +112,16 @@ function App() {
     <>
     {!images ? <p>error loading</p> :
       <>
-      <h3>Score: {score}</h3>
-      <h3>Best Score: {bestScore}</h3>
+      <div className = "header">
+        <section>
+          <h1>Disney Memory Game</h1>
+          <p>Click on a character and get a point! Make sure not click a character more than once!</p>
+        </section>
+        <section>
+          <h3>Score: {score}</h3>
+          <h3>Best Score: {bestScore}</h3>
+        </section>
+      </div>
       <div className='mem-card-container'>
         {order.map((index) =>  
             <MemoryCard key = {images[index].name} name = {images[index].name} url = {images[index].url} onClick={() => handleClick(images[index])} /> 
