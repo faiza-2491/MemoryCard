@@ -4,4 +4,6 @@
     flex-direction: column;
     gap: 2rem;
     padding: 1rem;
+    background-image: url(/kollsd-stars-5673510.png);
+    background-size: cover;
 }
